@@ -264,7 +264,7 @@ $$
 **BatchNorm有效的原因不在于减少内部协变量转移，而有可能是平滑Loss Landscape，简化优化函数。**
 
 Cons：训练和测试的目标不一致，可能导致表现差。
-注意，Batchnorm是对每个Batch起作用，然后作用范围是C个Chanel的H\*W层。
+注意，Batchnorm是对每个Batch起作用，然后作用范围是C个Channel的H\*W层。
 
 还存在别的norm工具，如Layer Norm，Instance Norm，Group Norm。
 
@@ -325,8 +325,8 @@ $\mathcal{L}_{CE}=H(P,Q)=-\sum_{x\in\mathcal{X}}P(x)\log Q(x)$
 
 ##### ResNet
 ResNet创造性的把Layer层数提升到了152层，同时把分类错误率降低到了5%以内（比人类做得更好）
-
-ResNET中把两个3\*3的Conv改成了两个1\*1和一个3\*3的Conv，能够减小参数的开销和内存存储。BottleNeck：对信息做出抽象和提炼，却更加的有效（152层效果好）
+每进入一个新的Stage（由多个Block组成）就把dimension / 2.
+ResNET中把一个3\*3的Conv改成了两个1\*1和一个3\*3的Conv，能够减小参数的开销和内存存储。BottleNeck：对信息做出抽象和提炼，却更加的有效（152层效果好）。这里做的是减小channel数，最后再用1\*1的还原。
 
 Beyond ResNet：
 - DenseNet: 增加bypass。
@@ -340,30 +340,41 @@ Granularity：颗粒度，segmentation之间存在颗粒度的差异。
 
 grounding： 定位Segmentation的位置。
 
-- Semantic Segmentation是一个Dense Prediction。
+- Semantic Segmentation是一个Dense Label Prediction / per-pixel classification problem。
 - Classification是一个Global Prediction。
 
 如果单纯的使用Convolution，由于input和output同维，所以中间不能够进行resolution减小，导致开销会变得非常的大。
-
+#### Encoder-Decoder
 Auto-Encoder：BottleNeck的模型，用encoder将input维度变小，decoder将它回到output的维度。
 要求中间的维度比信息维度更大，不然会出现不可逆转的信息缺失（irreversible info loss）
 
-Upsampling：从小的resolution到大的resolution，采用Transposed Convolution，实际上就是把小的矩阵当作权重，给空间中对应的位置加上一个值。
+Upsampling：从小的resolution到大的resolution：
+- Unpooling：把大格子内的所有点的值都赋值为小resolution对应的值。
+- Maxpooling：只记录一个格中具有最大值，然后把resolution扩大。
+- 采用Transposed Convolution，实际上就是把小的矩阵当作权重，给空间中对应的位置加上一个值, 做的是卷积的逆操作。
+> 可以采用矩阵的方法来实现，考虑卷积相当于是$\vec{x}*\vec{a}=X\vec{a},\vec{x}*^T\vec{a}=X^T\vec{a}$
 
 Advantage of Bottleneck：
 - Lower memory cost
 - Larger receptive field and thus better global context
-
+#### UNet
 但是比较小的bottleneck中只能存储大致的位置信息，还需要在里面存储`Global context`和`Per-pixel spatial information`
-
 UNet：将原图copy and crop到网络右侧，将得到的bottleneck的信息作为论据来划分原图。
 Skip link: 
 - Assist final segmentation 
 - Avoid memorization
 
-Evaluation of Semantic Segmentation：
-Intersection of Union
-$IoU = \frac{\text{target} \land \text{prediction}}{\text{targe} \lor \text{prediction}}$
+#### Evaluation
+如果直接使用pixel-accuracy，你有可能什么都不做就达到比较不错的准确率（如预测蓝天）。
+Intersection of Union: $IoU = \frac{\text{target} \land \text{prediction}}{\text{targe} \lor \text{prediction}}$，此时对应的Loss应该修改为：
+$$
+\begin{aligned}
+I(X)&=\sum_{v\in V}X_v*Y_v\\
+U(X)&=\sum_{v\in V}(X_v+Y_v-X_v*Y_v)\\
+IoU&=\frac{I(X)}{U(X)}\\
+L_{IoU}&=1-IoU=1-\frac{I(X)}{U(X)}
+\end{aligned}
+$$
 然后对于每一个类别算一个IoU，把他们取mean作为最终的评测标准 - $mIoU \le 1$。
 
 
