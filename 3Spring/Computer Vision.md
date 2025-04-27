@@ -153,21 +153,20 @@ $\theta = \det(M) - \alpha Tr(M)^2 - t$,其中$\alpha,t$是阈值。$\alpha=\fra
 高斯Filter具有旋转等变，而rectangle window就没有。
 
 对于 Harris Corner Detector 有，具有旋转和平移等变性，但是在缩放上并非不变的。
-## Deep Learning
 现在我们诉说的是*Learning Method*。
 ### Feature
 feature 就是用来描述图片的局部情况，具有平移旋转不变性（invariance）。
 Model则是基于features来计算 / 预测 我们需要的结果。
 
-### Machine Learning
-#### Example
+## Machine Learning
+### Example
 这里以 Digit 为例，来简述该过程。
-##### Prepare Data
+#### Prepare Data
 这里我们用 MNIST - 一个标注好了的数据集 来作为我们的dataset($X\in\mathbb{R}^{28*28},y\in {0,1}$)
-##### Build Model
+#### Build Model
 先 flatten 把整个图片变成一个列向量，然后$z=h(x)=\theta^Tx$
 用 sigmoid 函数来作为从$[-\infty,\infty]$到$(0,1)$的概率映射，$g(z)=\frac{1}{1+e^{-z}}$
-##### Loss Function
+#### Loss Function
 我们用极大似然估计来计算Loss函数，考虑
 $$
 \begin{aligned}
@@ -178,26 +177,25 @@ p(Y|X;\theta)&=\prod h(\theta)^y(1-h(\theta))^{1-y}\\
 &=-\sum y\log h(\theta) + (1-y)\log(1-h(\theta))
 \end{aligned}
 $$
-##### Training
+#### Training
 通过梯度下降(GD)的办法来优化参数：$\theta:=\theta-\alpha\nabla_\theta\mathcal{L}(\theta)$
 **Batch Gradient Descent vs. Stochastic Gradient Descent**
 Batch Gradient Descent 把所有数据作为训练数据来计算梯度（也就是说一个batch就是all data）
 Stochastic 采用 Randomly sample N pairs as a batch from the training data and then compute the average gradient from them, 很明显更快，也可以从局部最优解中逃脱出来。
-##### Testing
+#### Testing
 需要通过test来eval model的表现。
 
-#### Multilayer Perceptron
+### Multilayer Perceptron
 如果只有一个线性层和一个激活层（sigmoid）无法处理不能直接通过线性变换来区分的分类任务，所以引入MLP。
 多层线性层，每个线性层后面搭配一个Non-Linear的激活层，这样子的梯度下降需要通过链式法则来计算梯度值。
 
 激活函数比较常用的有：Sigmoid($\frac{1}{1+e^{-x}}$)，tanh($\tanh(x)$)，ReLU($\max(0,x)$)，Leaky ReLU($\max(0.1x,x)$)，Max(直接取$\max$)和ELU($x / \alpha(e^x-1)$)。**表现最好的是ReLU！**
 
 关于神经网络层数的计算不能计算Input Layer（也就是说就是中间层+输出层），FC（Fully Connected Layer）表示全连接，当前层和下一层的所有节点都有连接。
-#### Convolutional Neural Network(CNN)
+### Convolutional Neural Network(CNN)
 我们发现如果直接 Flatten 输入会导致一些局部信息的丢失，所以考虑引入卷积。
 对于一个$H*W*C$的图像，用一个$A*B*C$的卷积Filter会把他变成$(H-A+1)*(W-B+1)*1$的新图像，有多少个Filter新的图像的channel数就是多少。*注意卷积完要做ReLU，就像Linear（FC）变化之后也要ReLU一样*
-
-##### Stride & Padding
+#### Stride & Padding
  > Stride：表示每两个选取Filter之间的距离，每隔多少距离计算一次Conv.
  > Padding: 把整个图像的上下左右边界同时扩展多少。
  
@@ -205,18 +203,18 @@ Stochastic 采用 Randomly sample N pairs as a batch from the training data and 
 新图像的尺寸为$(H+2P-K)/S+1, (W+2P-K)/S+1$。
 一般来说我们选取P=1,K=3,S=1。
 
-##### Pooling
+#### Pooling
 池化，将输入规模可以缩小一半，一般有avgpooling、maxpooling和sumpooling。
 
 一般来说，CNN的网络结构为：((CONV+ReLU)\*N+POOLING)\*M -> (FC+ReLU)\*K -> Softmax.
 
 很明显CNN的网络需要的参数量比FC的更少，FC的表达能力比CNN更强，但是由于参数更多更难训练出来。
 
-##### Data preparation
+#### Data preparation
 对于一个CNN而言，如果输入都是正/负，考虑在某个Linear层的时候所有的gradient都是大于0的，就会导致学习效率下降。
 所以需要normalize，即$x=(x-mean)/std$.
 
-##### Weight Initialization
+#### Weight Initialization
 首先一个错误的思路是把 Weight 初始全部都赋值为0，但是由于所有的weight都一样，最后传递回来的梯度也是一样的，就失去了不对称性。
 
 接下来考虑给所有的 Weight 给一个很小的随机权重，$W=0.01 * rand(D,H)$，这样子mean是0，std=0.01.
@@ -225,7 +223,7 @@ Stochastic 采用 Randomly sample N pairs as a batch from the training data and 
 我们为了保证$y=x_1w_1+\cdots+x_kw_k$等式左右两端的方差不变，有：$Var(y)=\sum Var(x_i)Var(w_i)$，此时我们可以令$Std(w)=\frac{1}{\sqrt{n}}$.  - **Xavier Initialization**
 
 如果我们把激活函数从tanh变成ReLU，发现还是会让右端的方差减半，此时我们需要改变一下：$Std(w)=\frac{2}{\sqrt{n}}$. - **He Initialization**
-##### Optimizer
+#### Optimizer
 为了防止陷入鞍点 / 局部最小值，我们可以采用SGD+Momentum的方法，也就是把gradient descent和上一次的结果做一个带权求和。$v_{t+1}=\rho v_t + \nabla f(x_t)$
 Adam：可以理解为带Momentum的RMSProp。
 $$
@@ -275,26 +273,60 @@ Cons：训练和测试的目标不一致，可能导致表现差。
 对于一个Residual Block，Y(Output) = X(Input) + F(X). F(X) 的结构可以理解为 Conv+ReLU+Conv 层。
 会给Gradient BP增加一个bypass，这种Skip Link能够降低Loss Landscape的Chaotic程度。
 #### Overfitting
+##### Early Stopping
+在 Val 上一旦出现 acc 下降就立即停止，或者记录val上best acc对应的参数模型。
+##### Data Augmentation
+对于数据层面多收集数据的cost比较大，所以我们采用数据增强的方法
+- Position：旋转，平移等
+- Color：亮度调整，对比度调整，色彩调整等
+可以用来：
+- 降低Overfitting
+- 增加模型泛化能力
+- 解决分类不平衡
+但是增强太强了会失去信息，太弱了会无效。
+##### Regularization
+对于Loss增加一个正则化的代价，防止模型过于复杂。
+常用的有L1，L2和Elastic net（L1+L2）
 
+Batchnorm也是正则化的一种，能够限制模型的表达能力（有了BN就可以不用Dropout了）。
+##### Dropout
+在Train的时候随机丢弃某些层的若干节点，为了防止某些特征的co-adaptive。
+*注意：在Train的时候Dropout了要在最后Val的时候Scale回来*
 
+一般来说只有在FC才需要用正则化和Dropout。
 ### Classification
-Image Classification最重要的点在于语义理解，但是存在语义鸿沟。
-- Viewpoint
-- Pose
-- Occlusion
-- Background Variation
-- Illumination
-- Intraclass Variation
-很明显FC对于图像扰动（Image Perturbations）做的非常的差（一个简单的Translation就会导致失效）。而CNN具有Translation Equivarirance（Parameters Sharing等价于Translation Equivarirance）。
+做分类任务可以有参数和没参数：
+- Non-parameteric：KNN（k近邻）
+- Parameteric：CNN等
+#### K Nearest Neighbor
+距离的计算可以用L1 distance（曼哈顿距离），L2 distance（欧几里得距离）来计算，但是这些都对图像的变换非常敏感。
+#### CNN
+##### Loss Function
+这里比较常见的方法是：Softmax + Cross-Entropy Loss。
+*也有SVM loss，$L_i=\sum_{j\neq y_i}\max(0,s_j-s_{y_i}+1)$，但是现在已经不常用*。
 
-但是对于scale和rotation的变化就不存在等变性了。
-在CNN网络层中的pooling层（如max-pooling），有一个天然的对小旋转和translation的不变性，所以我们可以说CNN对小旋转和translation具有invariant。
+Softmax函数$\sigma^\beta(z)_i=\frac{e^{\beta z_i}}{\sum_j e^{\beta z_j}}$，一般来说取$\beta=1$,如果$\beta \rightarrow \infty$，Softmax就变成了argmax，对于两个值的Softmax和sigmoid函数等价。
 
+考虑如何计算两个Predict Vector之间的距离，采用Kullback-Leibler divergence。
+$$
+\begin{aligned}
+D_{KL}(P||Q)&=\sum_{x\in \mathcal{X}}P(x)\log (\frac{P(x)}{Q(x)})\\
+&=\sum_{x\in \mathcal{X}}P(x)\log P(x) - \sum_{x\in \mathcal{X}}P(x)\log Q(x)\\
+&=H(P,Q)-H(P)
+\end{aligned}
+$$
+我们这里引入把P作为ground-truth vector，此时$H(P)$就是一个常量。那么可以把Loss写成交叉熵的形式：
+$\mathcal{L}_{CE}=H(P,Q)=-\sum_{x\in\mathcal{X}}P(x)\log Q(x)$
 
+##### Receptive Field
+感知域，可以理解为一个点能够与原图多少个临近点相关。
+这可以解释为什么CNN的网络结构要用比较小的Filter以及深层网络，为了保证Receptive Field大小差不多，我们可以选择多用几个小Filter的Conv层，而不是直接用一个比较大的Filter的Conv层。
+这样子可以减小参数量，例如两个3\*3的表达力等价于一个5\*5的表达力，但是参数:$3*3*2=18 < 5*5=25$。
 
-ResNET中把两个3\*3的Conv改成了两个1\*1和一个3\*3的Conv，能够减小参数的开销和内存存储。
+##### ResNet
+ResNet创造性的把Layer层数提升到了152层，同时把分类错误率降低到了5%以内（比人类做得更好）
 
-BottleNeck：对信息做出抽象和提炼，却更加的有效（152层效果好）
+ResNET中把两个3\*3的Conv改成了两个1\*1和一个3\*3的Conv，能够减小参数的开销和内存存储。BottleNeck：对信息做出抽象和提炼，却更加的有效（152层效果好）
 
 Beyond ResNet：
 - DenseNet: 增加bypass。
