@@ -2,7 +2,7 @@
   "interfaceFontFamily": "Monaco",
   "textFontFamily": "Monaco",
   "monospaceFontFamily": "Monaco",
-  "baseFontSize": 20,
+  "baseFontSize": 16,
   "showViewHeader": false,
   "showRibbon": false,
   "nativeMenus": true,

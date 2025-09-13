@@ -34,7 +34,7 @@ Edge就是延其方向像素强度显著变化，法线方向几乎没有变化�
 $$
 Precision=\frac{TP}{TP+FP}, Recall=\frac{TP}{TP+FN}
 $$
-#### 
+
 在image中如果直接用求出来的gradient会存在很大的noise，所以需要用filter来对其进行smooth。比较常见的是使用 Gaussian Filter。
 
 #### Non-Maximum Suppression
@@ -69,7 +69,7 @@ $$
 这个时候就需要用到数学方法计算，也就是最小二乘法。
 #### Least Square Method
 直线的方程为$ax+by+d=0$,那么距离就是$dis=\frac{|ax_i+by_i+d|}{\sqrt{a^2+b^2}}$.
-所以$\sum dis^2$可以近似于$\sum (ax_i+by_i+d)^2$. 写成矩阵的形式就是
+所以$\sum dis^2$可以近似于$\sum (ax_i+by_i+d)^2$.  写成矩阵的形式就是
 $$
 A=\begin{bmatrix}x_1&y_1&1\\&\cdots\\x_n&y_n&1\end{bmatrix},h=\begin{bmatrix}a\\b\\d\end{bmatrix}
 $$
@@ -153,12 +153,11 @@ $\theta = \det(M) - \alpha Tr(M)^2 - t$,其中$\alpha,t$是阈值。$\alpha=\fra
 高斯Filter具有旋转等变，而rectangle window就没有。
 
 对于 Harris Corner Detector 有，具有旋转和平移等变性，但是在缩放上并非不变的。
+## Machine Learning
 现在我们诉说的是*Learning Method*。
 ### Feature
 feature 就是用来描述图片的局部情况，具有平移旋转不变性（invariance）。
 Model则是基于features来计算 / 预测 我们需要的结果。
-
-## Machine Learning
 ### Example
 这里以 Digit 为例，来简述该过程。
 #### Prepare Data
@@ -241,7 +240,7 @@ Learning Rate方面，训练的一开始我们需要比较大的Lr，而随着�
 #### UnderFitting
 ##### BatchNorm
 一般插入在FC/Conv和非线性层中间，学习平均值$\beta$和标准差$\gamma$，把input变成一个正态分布的output。
-Train：
+Train ：
 $$
 \begin{aligned}
 \mu_j&=\frac{1}{N}\sum_{i}x_{i,j}\\
@@ -418,10 +417,9 @@ $$
 
 问题在于aperture的大小需要非常小，但是随着孔径大小减小，光亮就会减小，这就是trade-off。
 
-现在我们给相机添加一个透镜 lens，让光线全部通过一个折射投影到相纸平面。
+现在我们把小孔变成一个透镜 lens，让光线全部通过一个折射投影到相纸平面，对于不同距离的存在不同的对焦距离。
 
-> 椭形畸变：在镜头边缘会出现畸变，靠近棱镜的**近轴折射**则不会
-
+> 椭形畸变(Radial Distortion)：在镜头边缘会出现畸变，靠近棱镜的**近轴折射**则不会
 - 完美的棱镜：No distortion
 - Pin cushion: 会比实际物品更大一点（外弯）
 - Barrel: 比实际物体小（内弯）
@@ -437,9 +435,9 @@ $$
 
 **Transformation:**
 $P=(x,y,z)\rightarrow P'=(\alpha\frac{x}{z} + c_x, \beta\frac{y}{z} + c_y)$
-其中$(c_x,c_y)$是焦点垂直点的坐标，$\alpha$和$\beta$是相机的内参$f\times k, f\times l$。
+其中$(c_x,c_y)$是焦点垂直点的坐标，$\alpha$和$\beta$是相机的内参$\alpha=fk, \beta=fl$。
 
-这样子的一个变化不是一个线性变化，采用齐次坐标系可以变成线性变化。
+这样子的一个变化不是一个线性变化(因为要divide z)，采用齐次坐标系可以变成线性变化。
 接下来用矩阵表示这个trans：
 ##### Homogeneous Coordinate System
 $E\rightarrow H: (x,y)\rightarrow (x,y,1) | (x,y,z)\rightarrow (x,y,z,1)$
@@ -451,8 +449,14 @@ $$
 P'_h = \begin{bmatrix}\alpha x + zc_x\\\beta y + zc_y\\z\end{bmatrix} = \begin{bmatrix}\alpha& 0&c_x&0 \\0&\beta&c_y&0\\0&0&1&0\end{bmatrix}\begin{bmatrix}x\\y\\z\\1\end{bmatrix} = K\begin{bmatrix}I&0\end{bmatrix}P_h
 \end{aligned}
 $$
-这个$K$就是相机的内参，一共有5个自由度。
 > 如果image plane存在一个倾斜角也可以通过矩阵来表示（不考）
+
+$$
+\begin{aligned}
+P' = \begin{bmatrix}\alpha&-\alpha\cot\theta&c_x&0\\0&\frac{\beta}{\sin\theta}&c_y&0\\0&0&1&0\end{bmatrix}\begin{bmatrix}x\\y\\z\\1\end{bmatrix}
+\end{aligned}
+$$
+这个$K$就是相机的内参，一共有5个自由度。
 
 #### Extrinsics
 
@@ -466,9 +470,10 @@ $$
 P_h' = K[I\ \ \ 0]P_h = K\begin{bmatrix}R&T\end{bmatrix}P_w=MP_w
 $$
 这样就把相机的内参和外参都运用到了坐标转换中。
+考虑把$M$矩阵写成$\begin{bmatrix}m_1\\m_2\\m_3\end{bmatrix}$的形式，有：最终image plane上的坐标应该是$(\frac{m_1P_w}{m_3P_w},\frac{m_2P_w}{m_3P_w})$.
 
 Weak Projective Camera：弱投影相机，相机距离物体的距离为常数，可以不需要齐次坐标就能够使用线性变换。
-虽然比较的简单，但是失去了近大远小的感觉。
+虽然比较的简单，但是失去了近大远小的感觉。最终相机平面上的坐标应该是$(m_1P_w,m_2P_w)$.
 
 Orthographic Projection: 正交投影，不改变长度特征。$x'=x, y'=y$
 
@@ -476,11 +481,10 @@ Orthographic Projection: 正交投影，不改变长度特征。$x'=x, y'=y$
 Goal: 通过多个点得到相机的内参和外参。
 已知$P_1,\dots, P_n$在某个参考坐标系下的坐标，以及在对应image上的pixel坐标，要求相机的参数。
 
-考虑相机参数$M$自由度，内参有5个自由度（含倾斜），外参旋转矩阵3个自由度，Translation 3个自由度，一共是$5+3+3=11$
-个自由度。
+考虑相机参数$M$自由度，内参有5个自由度（含倾斜），外参旋转矩阵3个自由度，Translation 3个自由度，一共是$5+3+3=11$个自由度。
 
-那么一个点对$(P_i, p_i)$可以构成两个等式，我们至少需要6个对应点才能够求解。
-$PM=0 \rightarrow P=UDV^T$，然后根据SVD可以求解出来M，再把M标准化成最后一行是0，1的形式就可以求解参数了。
+那么一个点对$(P_i, p_i)$可以构成两个等式$u_i(m_3P_i)-m_1P_i=0, v_i(m_3P_i)-m_2P_i=0$，我们至少需要6个对应点才能够求解。
+$Pm=0 \rightarrow P=UDV^T$，然后根据SVD可以求解出来M，再把M标准化成最后一行是0，1的形式就可以求解参数了。
 P矩阵的构成为
 $$
 P=\begin{bmatrix}P_1^T&0&-u_1P_1^T\\
@@ -508,7 +512,9 @@ $$
 
 *感觉这一串推导还是很有难度的，不知道会不会考*
 
-相机的K中的$\alpha,\beta$决定field of view（视角）
+相机的K中的$\alpha,\beta$决定field of view（视长角）
+为什么需要3个棋盘（或者至少2个不平行的棋盘）：对于只有一个棋盘，存在深度和大小的多义性。
+一般来说我们需要做相片畸变的还原，计算三维坐标，最后再进行参数的计算。
 
 出现Reproduction Errors的原因有很多种，比较常见的有：
 1. 输入数据错误（标定板尺寸错误）、标定板制造不精确（尺寸不准、不平整）
@@ -519,19 +525,19 @@ $$
 ### 3D model representation
 #### Depth image
 2.5D的图像, $H*W*1$，最后一维的1深度。
-- ray depth: 激光雷达返回的深度
+- ray depth: 激光雷达返回的深度（实际上是长度）
 - Z depth: 深度图中代表的深度
 
 ##### Depth back-projection:
-将深度图中的$(u,v,z)$重新得到$(x,y,z)$.
+将深度图中的$(u,v,z)$重新得到$(x,y,z)$.$(u,v)=(\alpha\frac{x}{z}+c_x,\beta\frac{y}{z}+c_y) \rightarrow x=z(u-c_x)/\alpha,y=z(v-c_y)/\beta$.
 2.5D的含义则是由于需要得知相机$K$才能够得到三维空间坐标系下的坐标。
 
 ##### Depth Sensor
-
-
 Stereo Sensors：双目传感器，可以通过双目视差来计算物体对应的距离：
 $u-u' = \frac{B\cdot f}{z}$，我们称这叫做 disparity. 
-该课还讲了关于该公式的解释（因为不太像相似三角，可以看第二节课的开头）
+$\frac{u'+B-u}{B}=\frac{z-f}{z}\rightarrow \frac{u-u'}{B}=\frac{f}{z}$
+<img src="Depth-Sensor.png" width="600">
+
 
 左眼和右眼都能够看到的field叫做co-visible，只有单目能看到的对应的depth是 non-valued 的。
 
@@ -549,9 +555,8 @@ $u-u' = \frac{B\cdot f}{z}$，我们称这叫做 disparity.
 A piece-wise Linear Surface Representation。
 如何表述triangle mesh：用 Vertex, Edge, Face 来表示，其中每个 Face 都是 Triangle。
 
-存储方法：
-- STL：triangle用vertex index indice来存储，本质是一个List，注意按照逆时针顺序存储，保证法向量方向正确（指向外）
-- OBJ
+存储
+STL：triangle用vertex index indice来存储，本质是一个List，注意按照逆时针顺序存储，保证法向量方向正确（指向外）
 
 Compute Mesh Geodesic Distance：
 - Naive：直接求graph上的最短路径，这样子没有考虑从surface中间穿过的路径。
@@ -559,6 +564,318 @@ Compute Mesh Geodesic Distance：
 - Exact geodesic distance: MMP method
 #### Point Cloud
 本质上是point set，因为点的内部顺序无关。
-点云并非是 surface ， 而是二维流形：Surface + Sampling
+点云并非是 surface ， 而是二维流形：Mesh Surface + Sampling
 
 ##### Uniform Sampling
+在Triangle中采样，可以采用:
+- 把三角形翻折成平行四边形然后最后将点对称回来的做法实现均匀采样. $x = (1 − a_1)v_1 + (1 − a_2)v_2 + (a_1 + a_2)v_3, a_1,a_2 \sim \text{Uniform}(0,1)$
+- $x=(1-\sqrt{r_1})v_1+\sqrt{r_1}(1-r_2)v_2+\sqrt{r_1}r_2v_3, r_1,r_2\sim U(0,1)$
+
+##### Farthest Point Sampling (FPS)
+目标是让两两点之间的距离和最大。
+1. 首先也需要进行Uniform Sampling，要求首先采样超过需求目标的点数（over sample）。
+2. 初始随机加入一个点，之后每次贪心的加入离当前点集距离和最远的点，直到达到$k$个点。
+
+这样子如果原始点集很大的话复杂度就会比较高，所以我们先采用一次Uniform Sample缩小点集规模。
+
+##### Distance Metrics
+- Chamfer Distance：$d_{CD}(S1,S2)=\sum_x\min_y ||x-y|| + \sum_y\min_x ||x-y||$，对Sample不敏感
+- Earth Mover's Distance: $d_{EMD}(S_1,S_2)=\min_{\phi:S_1\rightarrow S_2}\sum_{x}||x-\phi(x)||$，要求$\phi$是个双射，对Sample很敏感
+### 3D Network
+#### PointNet
+对于点云的网络，由于点的顺序对于实际构成是没有影响的，所以我们需要具有 Permutation Invariance 的函数。
+如果排序的话，考虑新加入一个点会对整个input造成translation的影响，所以不能采用排序的方法。
+
+Symmetric Function：$f(x_1,x_2,\cdots,x_n)\equiv f(x_{\pi_1},x_{\pi_2},\cdots,x_{\pi_n})$.
+为了保证orderless，我们采用Pointnet的结构，首先把每一个点的3维坐标变成一个C Channels的feature，然后用maxpool把这n个点的综合在一起，就变成了一个C维的Feature。然后再对这个做classification就好了。
+
+如果要做Segmentation的话，可以把我们算出来的$n*64$的叠加一个C维的feature，然后这就是每一个点的local feature+global feature（实际上和Unet的最顶层是一样的做法）
+
+Robustness：发现训练出来的特征选取点都是框架点（Critical Points），所以删除点/加入点只要不是框架点就不会影响结果。
+
+Limitation：没有局部信息，无Local context，基于absolute coordinate。
+
+#### PointNet++
+考虑到PointNet没有提取到局部特征，所以考虑采取 sampling+grouping 的方法。
+##### Classification
+![[pointnet++_cla.png]]
+新增一个set abstraction的过程：
+1. 采用sample ball采取若干个小圆球，球的中心点为central point，然后将坐标变成relative coordinate。central points的选取通过FPS来选择。
+2. 对于每一个小的Ball做pointnet提取得到C个Features，变成新的点集（点的数量减少，特征变多）。
+最后变成只有一个点，再做pointnet就和以前一样即可。
+
+##### Segmentation
+考虑如何在点数减少之后UpConvolution回到原有点数目，可以采用Unet的方法，通过Skip Link把原本的features继承，然后对于新出现的维度的特征，采用3-interpolate的方法把最近的3个点的inverse distance weighted average累加。
+![[pointnet++_seg.png]]
+
+##### More
+Pointnet是各向同性的，Conv是各向异性。
+
+#### SparseConvNet
+把 point cloud 转换成 surface voxel(此时Voxel的resolution比较大，但是点比较小，所以只储存occupied voxel)，然后用Sparse Conv来做卷积。
+比较适用于大尺度下的预测（大尺度的激光雷达，小尺度还是用点云比较合适）。
+
+### Object Detection
+#### Task
+- Single object: Location + Classification
+- Multi Object: 如果采用sliding window的话，计算量太大了。
+> Rooted mean squared loss(RMSE): $\sqrt{\frac{1}{N}\sum\Delta_i^2}$, 在0的时候没有梯度。
+#### RCNN
+首先用Region of Interest（RoI），然后对每一个region做一个CNN得到features，对这些做SVM和Bound Box Reg得到detection结果。
+
+#### Fast RCNN
+考虑到对于每一个RoI都存储一个CNN的参数比较的麻烦，所以可以先提取features然后对feature做一个RoI，将得到的region做crop后用同一个CNN再抽象，最后通过Linear得到Box offset，Linear+softmax得到classification.
+
+这里对RoI做Crop用到的是**RoI Pooling**
+##### RoI Pool
+- 首先把边框Snap到网格上
+- 对这个grid cells做 max pooling 缩小规模到2\*2或者7\*7。
+
+#### Faster RCNN
+现在的问题在于Fast RCNN的开销主要是在Region Proposal，无法做到Tracking by detection.
+所以引入Region Proposal Network（RPN）
+##### Region proposal network
+目的：Predict the RoI.
+在feature上采用sliding window的办法扫描，因为resolution很低所以开销不高。
+对于每一个点有不同大小的window，我们称每一个不同的叫做一个anchor box，对这些存在：
+- Object or not
+- Box transforms（4种不同的corrections）
+
+所以现在存在K\*20\*15个Objectness，4K\*20\*15个Correction.
+这里我们只取objectness的top 300左右。
+
+所以Faster RCNN也叫做two stage detector：
+1. First stage: Use backbone to extract features, Use RPN to generate ~ 300 proposals.
+2. Second stage: For each proposal, predict class label and bbox refinement, Perform confidence thresholding to remove low-confidence bbox predictions, Perform non-maximal suppression (NMS) for deduplication.
+
+**YOLO: You only look once(Single-stage Detector)**
+大粒度的，直接在原图上划分成7\*7的网格，然后对每一个中心点用B=3个anchor box，同时算objectness和classification（把背景也作为一类）。
+快，但是效果差。
+
+##### Non-maximum Suppression
+找到置信度最高的bbox，把和他IoU高于threshold的都remove，然后再接着去剩下的最高的置信度bbox。
+
+#### Evaluation
+用Average Precision来判断，对于每一个类的bounding box，找到 top n 的 classification scores, 然后计算precision（用threshold）和recall曲线。
+$AP = \frac{1}{11}\sum_{Recall_i} Precision(Recall_i)$
+最终一般用不同threshold的AP mean(mAP)，或者干脆用0.50的AP来作为metric。
+### Instance Segmentation
+Multi Object的segmentation。
+
+#### Mask RCNN
+在每一个RoI后面加入一个Mask的binary的网络层就可以。
+最大的contribution在于提出了RoI Align
+
+##### RoI Align
+对于每一个提取出来的RoI区域，不采用Snap的方法，而是对于每一个区域sampling一些点，然后用双线性插值的方法来计算这些点的值，最后做max pooling。
+
+### 3D Object Detection and Instance Segmentation
+#### Frustum PointNet
+- Frustum Proposal
+- 3D Instance Segmentation
+- Amodal 3D Box Estimation
+#### Deep Sliding Shape
+在3D空间下做Sliding Window，
+
+#### Monocular Camera
+类似于Faster RCNN，只是在3D空间下，所以引入的也是3D的Proposals
+#### VoteNet
+点做Vote来找到表面点，然后做一个Cluster得到Bounding Box。
+
+## Sequential Data
+### RNN(Recurrent)
+循环使用的神经网络，$h_t=f_W(h_{t-1},x_t),y_t = f_{W_{hy}}(h_t)$，可以理解为时序电路，用来处理 Sequential Data.
+
+#### Vanilla RNN
+> vanilla是香草的意思，在该语境下代表basic。
+
+$$
+\begin{aligned}
+h_t &= \tanh(W_{hh}h_{t-1} + W_{xh}x_t) \\
+y_t &= W_{hy}h_t
+\end{aligned}
+$$
+注意Loss在BP中，高层的Loss都会回流到第一层.
+
+**Vanishing Gradient:**
+$$
+\begin{aligned}
+\frac{\partial h_t}{\partial h_{t-1}} &= \tanh'(W_{hh}h_{t-1}+W_{xh}x_t)W_{hh} \\
+\frac{\partial L_t}{\partial W} &=\frac{\partial L_t}{\partial h_t}\frac{\partial h_t}{\partial h_{t-1}}...\frac{\partial h_1}{\partial W} \\
+&=\frac{\partial L_t}{\partial h_t}\frac{\partial h_1}{\partial W}\prod_i W_{hh}\tanh'(W_{hh}h_{i-1}+W_{xh}x_i)
+\end{aligned}
+$$
+
+由于tanh导数的值在(0,1)之间，就会导致距离比较远的Loss对于当前参数的影响接近于0，进一步削弱Long-term effect.
+
+对于$\prod_i W_{hh}^t$，如果过大可以截断，但是太小了就没有办法，只能改变 RNN 结构
+
+#### Truncated Backpropagation
+在计算Backpropagation的时候只反传一部分的上文的Loss，这一段的窗口大小叫做sequence length:$\Delta T$.
+*长文本的生成仍然是当前的问题。*
+
+#### Embedding Layer
+考虑对于One hot vector做hidden layer的转换操作，实际上只能够利用到W的某一列。
+所以我们可以多增加一层embedding层，这个甚至可以是pretrained word embedding matrix。
+
+#### Sampling Strategies
+##### Greedy sampling
+always takes the highest prob.问题在于每一次输出的都会是固定的内容
+##### Weighted sampling
+sample the next token according to the predicted probability distribution，可能会出现wrong token
+##### Search
+首先我们考虑要求一个length为$T$的最大概率结果，可以变成:
+$p(y|x)=p(y_1|x)p(y_2|y_1,x)\cdots p(y_t|y_1,y_2,\cdots,y_{t-1},x)=\prod_{i=1}^Tp(y_i|y_1,...,y_{i-1},x)$
+
+- Exhaustive Search：直接搜索全空间，复杂度为$O(V^T)$
+- Beam Search: 每一个step仅保留$k$个最优的结果，实现每一步都是在$k^2$之中寻找$k$个最优解。k被称作the beam size
+
+### LSTM
+
+对于RNN中，本来存在$h, x, W$，现在我们把$W\begin{bmatrix}h\\x\end{bmatrix}$过一个$\begin{bmatrix}\sigma\\\sigma\\\sigma\\\tanh\end{bmatrix}$，形成$\begin{bmatrix}i\\f\\o\\g\end{bmatrix}$
+- i: Input gate, whether to write
+- f: Forget gate, whether to erase
+- o: Output gate, how much to reveal
+- g: Gate gate, how much to write
+
+然后$c_t=f\odot c_{t-1} + i\odot g, h_t = o\odot \tanh(c_t)$，这个符号表示按位乘法。
+
+维度可以理解为$(4h \times 2h)(2h\times 1) = 4h\times 1$
+
+LSTM提供了一个类似ResNet的Skip Link方法。
+
+### GRU(Gated Recurrent Unit)
+$$
+\begin{aligned}
+r_t&=\sigma(W_{xr}x_t+W_{hr}h_{t-1}+b_r)\\
+z_t&=\sigma(W_{xz}x_t+W_{hz}h_{t-1}+b_z)\\
+\hat{h}_t &= \tanh(W_{xh}x_t+W_{hh}(r_t\odot h_{t-1}) + b_h)\\
+h_t&=z_t\odot h_{t-1} + (1-z_t)\odot \hat{h}_t\\
+\end{aligned}
+$$
+
+### Image Captioning 
+可以先用CNN从图片中提取关键信息再过RNN，也可以用两个网络训练然后合并得到结果（VQA）
+
+### Attention 
+对于我们知道的input x得到的h，用网络$f_{att}(s_t, h_i)$得到对应的weight，做一个softmax后把h加权得到context $c_t$。$s$的获得则是由$s_t=g_U(y_{t-1},s_{t-1},c)$。
+#### Cross-Attention Layer
+Inputs: $Q,X,W_K,W_V$
+
+Outputs:
+- Keys: $K=XW_K$
+- Values: $V=XW_V$
+- Similarities: $E=QK^T / \sqrt{D_Q}$
+- Attention Weight: $A=\text{softmax}(E, dim=1)$。对列求softmax。
+- Output: $Y=AV$
+#### Self-Attention Layer
+只需要把上面的$Q$变成$Q=XW_Q$即可。
+
+但是这个具有permutation equivariant，所以可以在Q上面加入一个order的信息来表示第几个。
+##### Masked ...
+或者我们在算 similarities 的时候，可以只看前面的（将未来的E全部设置成-Inf），这样子就可以预测未来。
+##### Multiheaded ...
+有H个不同的Self-Attention，把他们生成的结果综合在一起。最后增加一个$W_O$的矩阵来把output变成和input同dimension。
+
+### Comparison
+- RNN：好处在于复杂度低，坏处在于无并行。
+- Convolution：好处在于可并行，坏处在于对于长序列需要存储很多数据
+- Self-Attention：好处：长序列很好，高并行度，只有4个矩阵乘法。坏处在于计算复杂度开销很高。
+
+### Transformer
+Input: X
+Output: Y
+
+- X过一个Self-Attention层到A
+- A过Layer Norm到B
+- B过MLP和Skip Link到C
+- C过一个Layer Norm到Y
+
+*Layer Norm:*
+对于每一个不同的token.
+$$
+\begin{aligned}
+\mu_i &= (\sum_j h_{i,j}) / D \\
+\delta &= (\sum_j (h_{i,j} - \mu_i)^2 / D)^\frac{1}{2} \\
+z_i &= (h_i - \mu_i) / \delta_i \\
+y_i &= \gamma \times z_i + \beta
+\end{aligned}
+$$
+
+#### Language Model
+需要在首和尾添加 Embedding matrix， 把单词转换成feature的维度(V\*D)。
+
+#### Vision Transformers(ViT)
+把图片分割成若干个小的patches，flatten之后通过linear层变成D维feature
+
+#### Tweaking Transformer
+##### Pre-Norm Transformer
+把最后一层的Layer Norm变到第一层，训练可以变得更加的稳定。
+
+##### RMS Norm
+把Layer Norm改成RMS Norm
+$y_i = \frac{x_i}{RMS(x)} * \gamma_i$
+$RMS(x) = \sqrt{\varepsilon + \frac{1}{N}\sum_i x_i^2}$
+
+##### SwiGLU MLP
+本来的MLP是$W_1[D\times 4D],W_2[4D\times D]$,$Y=\delta(XW_1)W_2$
+更新之后是：
+$$
+\begin{aligned}
+&W_1,W_2,W_3[D\times H]\\ 
+&Y=(\delta(XW_1)\odot XW_2)W_3
+\end{aligned}
+$$
+这样子并不可以减少参数量，$H=\frac{8D}{3}$，主要是能够增加稳定性(more stable)。
+
+##### MoE(Mixture of Experts)
+MLP的部分更新成$E$个不同的MLP，但是每一个Token只过A个MLP，称为active experts.
+
+## Generative Models
+### Fully Visible Belief Network (FVBN)
+考虑$p(x)=p(x_1,x_2,\dots,x_n)=\prod_ip(x_i|x_1,x_2,\dots,x_{i-1})$
+然后就可以用PixelRNN或者PixelCNN来计算$p(x)$的值。
+但是这个算法生成的很慢。
+### VAE
+考虑autoencoder的过程是从x encoder到特征z，然后再从特征z decoder到x'。
+用全概率公式拆分$p(x)=\frac{p(x,z)}{p(z|x)}=\frac{p(z)p(x|z)}{p(z|x)}$
+此时我们钦定$Z\sim N(0,I)$，那么问题就变成了求解$p(x|z)$和$p(z|x)$
+我们通过一个分布$q(z|x)$来近似$p(z|x)$，假设这些分布都是正态分布，就训练出来他们的均值和标准差。
+$L=-\log p_\theta(x)$，下文假设L是$\log p_\theta(x)$，然后要最大化L。
+![[Pasted image 20250618002824.png]]
+这个时候就取前两部分作为Loss，称为ELBO。
+在计算的时候$E_z[\log p_\theta(x^{(i)}|z)]$需要用到蒙特卡洛估计来近似。
+
+为什么叫variational？因为实际上是对$p_\theta$和$q_\phi$这两个函数求极值，但是我们也可以理解为对它的参数求解。
+
+### GAN(Generative Adversarial Networks)
+输入一个随机噪声z，通过一个Generator网络得到一张图片，再通过Discriminator网络判断这张图片是真/假。
+
+训练的目的在于让Generator网络得到一张尽可能不被判断为假的图片，以及让Discriminator网络尽可能把一张图片判断的准确。
+
+#### Generator Gradient Ascent
+这里我们发现对生成网络做Gradient Descent会在初期很缓慢，所以我们直接做Ascent。
+$\max_{\theta_g}E_{z\sim p(z)}\log(D_{\theta_d}(G_{\theta_g}(z)))$
+训练的时候可以做k步Discriminator的调优，然后再做一步generator的调优。这里k的取值可以为1或者大于1的值。
+注意，在generator的网络和一般的CNN网络不一样
+- 把pooling层用卷积层替代
+- 采用batchnorm归一化
+- 删除全连接层
+- 在generator中，除了最后一层用tanh，其它层都用ReLU激活
+- 在discriminator中，都用LeakyReLU激活。
+
+#### Quantitative Measurement
+$FID(r,g)=|\mu_r-\mu_g|^2 + Tr(\sum_r+\sum_g-2\sqrt{\sum_r\sum_g})$
+FID越小，两张图之间的差异越小。
+
+GAN还发现可以用噪声的向量运算得到想要的图片（smiling women - natural women + natural men = smiling men）。
+
+缺点在于无法得到准确的$p(x)$值，训练会不稳定（可能出现Mode Collapse的情况）
+### Diffusion Model
+考虑VAE只用了一个正态分布来拟合，假设它应该是$T$个高斯分布的累加。
+这样子再去训练得到的VAE模型等于对噪声不断加噪和去噪的过程，称为diffusion model。
+
+三者的比较：
+- VAE不能生成高质量图片
+- GAN不能够有好的模式覆盖度
+- Diffusion Model没有快的采样时间（运行开销大）。

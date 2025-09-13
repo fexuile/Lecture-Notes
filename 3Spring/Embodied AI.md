@@ -418,6 +418,10 @@ Multi-Task learning:
  - $O$:Observation space
 
 这个时候动作构成了一个集合$\tau = (s_1,a_1,\cdots,s_t,a_t)$,这个集合发生的概率我们可以写成$p_\theta(\tau)=p(s_1)\prod\pi_\theta(a_t|s_t)p(s_{t+1}|a_t,s_t)$，其中$\theta$是我们关于action的参数。
+
+Problem in RL:
+- policy gradient is noisy
+- Need extremely large samples(curse of dimensionality).
 ### Policy Gradient
 Learning的分类：
 - Online RL: 与环境会进行交互，得到实际的值
@@ -519,4 +523,5 @@ $$
 如果我们求一个比较极端的情况，对所有$n$的取值求平均，那么实际上可以推导得出来和 discount 会具有同样的效应。
 
 ### Off-Policy RL
-
+区别在于 data 能否复用。
+严格的 on-policy 的数据用了一次然后更新 policy 之后就不属于 current policy 的输出了。
