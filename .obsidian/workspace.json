@@ -11,10 +11,14 @@
             "id": "b4b6b22259ba7a9e",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "TELOS/Paperlist.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "新标签页"
+              "title": "Paperlist"
             }
           }
         ]
@@ -137,12 +141,13 @@
             "state": {
               "type": "outline",
               "state": {
+                "file": "TELOS/Paperlist.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "大纲"
+              "title": "Paperlist 的大纲"
             }
           }
         ],
@@ -166,6 +171,9 @@
   },
   "active": "b4b6b22259ba7a9e",
   "lastOpenFiles": [
+    "README.md",
+    "TELOS/Paperlist.md",
+    "TELOS",
     "4Fall/Compiler Principle.md",
     "4Fall/宏观经济学.md",
     "4Fall/img/Pasted image 20250914081247.png",
@@ -176,7 +184,6 @@
     "3Spring/img/Pasted image 20250618002824.png",
     "3Spring/img/pointnet++_cla.png",
     "3Spring/img/pointnet++_seg.png",
-    "README.md",
     "3Spring/img/Pasted image 20250519200118.png",
     "3Spring/img/Pasted image 20250519200114.png",
     "3Spring/img/Depth-Sensor.png",
