@@ -11,10 +11,14 @@
             "id": "6db112f5a6ef7359",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "4Fall/博弈论.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "New tab"
+              "title": "博弈论"
             }
           }
         ]
@@ -168,8 +172,8 @@
   "active": "6db112f5a6ef7359",
   "lastOpenFiles": [
     "4Fall/Compiler Principle.md",
-    "TELOS/Paperlist.md",
     "4Fall/博弈论.md",
+    "TELOS/Paperlist.md",
     "4Fall/宏观经济学.md"
   ]
 }
