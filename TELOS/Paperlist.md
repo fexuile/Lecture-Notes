@@ -26,3 +26,13 @@ Based on one-sided RDMA to allocate the remote memory, FineMem reduces latency, 
 - YCSB: Yahoo! Cloud Serving Benchmark, 分为ABCD 4种，每一种benchmark具有不同的特征。 
 - 将这种要保证consistency的操作可以和数据库中transaction的思想蕴含在一起，做到异步恢复。
 
+## Deterministic Client: Enforcing Determinism on Untrusted Machine Code
+**Problem:**
+
+**Design:**
+
+**Evaluation:**
+
+**Conclusion**
+
+**Learned:**
