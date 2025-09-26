@@ -151,12 +151,12 @@
               "title": "Outline of 宏观经济学"
             }
           }
-        ]
+        ],
+        "currentTab": 3
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 300
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -169,7 +169,7 @@
       "bases:Create new base": false
     }
   },
-  "active": "5282214d9143537b",
+  "active": "28c6cbf6c371cb30",
   "lastOpenFiles": [
     "4Fall/博弈论.md",
     "TELOS/Paperlist.md",
