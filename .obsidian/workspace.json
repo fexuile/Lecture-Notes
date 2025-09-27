@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "4Fall/宏观经济学.md",
+                "file": "4Fall/Compiler Principle.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "宏观经济学"
+              "title": "Compiler Principle"
             }
           }
         ]
@@ -94,7 +94,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "4Fall/宏观经济学.md",
+                "file": "4Fall/Compiler Principle.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -104,7 +104,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for 宏观经济学"
+              "title": "Backlinks for Compiler Principle"
             }
           },
           {
@@ -142,13 +142,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "4Fall/宏观经济学.md",
+                "file": "4Fall/Compiler Principle.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of 宏观经济学"
+              "title": "Outline of Compiler Principle"
             }
           }
         ],
@@ -169,12 +169,13 @@
       "bases:Create new base": false
     }
   },
-  "active": "28c6cbf6c371cb30",
+  "active": "5282214d9143537b",
   "lastOpenFiles": [
-    "4Fall/博弈论.md",
-    "TELOS/Paperlist.md",
-    "README.md",
+    "Untitled.md",
     "4Fall/Compiler Principle.md",
-    "4Fall/宏观经济学.md"
+    "4Fall/博弈论.md",
+    "4Fall/宏观经济学.md",
+    "TELOS/Paperlist.md",
+    "README.md"
   ]
 }
