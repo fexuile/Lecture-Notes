@@ -4,21 +4,21 @@
     "type": "split",
     "children": [
       {
-        "id": "166bab103d6c3b29",
+        "id": "ac49f462e49e920a",
         "type": "tabs",
         "children": [
           {
-            "id": "5282214d9143537b",
+            "id": "7dfe76b678311589",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "4Fall/Compiler Principle.md",
+                "file": "TELOS/Paperlist.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Compiler Principle"
+              "title": "Paperlist"
             }
           }
         ]
@@ -78,7 +78,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 242.5
+    "width": 226.5
   },
   "right": {
     "id": "1096486ea8481d66",
@@ -94,7 +94,6 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "4Fall/Compiler Principle.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -104,7 +103,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for Compiler Principle"
+              "title": "Backlinks"
             }
           },
           {
@@ -142,13 +141,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "4Fall/Compiler Principle.md",
+                "file": "TELOS/Paperlist.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of Compiler Principle"
+              "title": "Outline of Paperlist"
             }
           }
         ],
@@ -156,7 +155,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 242.5
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -169,13 +168,16 @@
       "bases:Create new base": false
     }
   },
-  "active": "5282214d9143537b",
+  "active": "28c6cbf6c371cb30",
   "lastOpenFiles": [
-    "Untitled.md",
+    "TELOS/Issues.md",
+    "TELOS/Paperlist.md",
+    "Untitled",
+    "Issues",
+    "README.md",
+    "Untitled 1.md",
     "4Fall/Compiler Principle.md",
     "4Fall/博弈论.md",
-    "4Fall/宏观经济学.md",
-    "TELOS/Paperlist.md",
-    "README.md"
+    "4Fall/宏观经济学.md"
   ]
 }

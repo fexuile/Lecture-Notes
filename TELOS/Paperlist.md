@@ -28,11 +28,20 @@ Based on one-sided RDMA to allocate the remote memory, FineMem reduces latency, 
 
 ## Deterministic Client: Enforcing Determinism on Untrusted Machine Code
 **Problem:**
+Determinism in sandbox with low startup overhead is essential.
 
 **Design:**
+Deploy DeCl in both x86-64 and arm arch. 
+1. Machine Code: use align-bundles with binary code insertion, splitting blocks of code.
+2. Metering: Branch-based and Timer-based. Branch need gas detection and some optimization. Timer only need preempt based on gas count.
+3. Integration of LFI: the need of position-oblivious code.
 
 **Evaluation:**
+The most important figure is Figure 7 and Figure 8 but with small size, which represent the overhead of time and throughput of DeCl.
 
 **Conclusion**
+DeCl is a software sandboxing system, enforcing deterministic and metered in x86 and arm64, with high performance and feasibility. ==The first time to use SFI in Deterministic rather than memory isolation.==
 
 **Learned:**
+- Present the important figure in a eye-catching area.
+- Before read the paper, ensure you have some prerequisite or to read the book about this field.
