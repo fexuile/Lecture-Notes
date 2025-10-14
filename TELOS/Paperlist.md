@@ -45,3 +45,10 @@ DeCl is a software sandboxing system, enforcing deterministic and metered in x86
 **Learned:**
 - Present the important figure in a eye-catching area.
 - Before read the paper, ensure you have some prerequisite or to read the book about this field.
+
+## Extending Applications Safely and Efficiently
+**Problem:**
+**Design:**
+**Evaluation:**
+**Conclusion:**
+**Learned:**
