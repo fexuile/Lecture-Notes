@@ -4,17 +4,21 @@
     "type": "split",
     "children": [
       {
-        "id": "67550c5f11edfbe6",
+        "id": "ae5273f7c46b7174",
         "type": "tabs",
         "children": [
           {
-            "id": "51261f2d7e3837c4",
+            "id": "060aee3bcc929b4e",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "4Fall/Compiler Principle.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "New tab"
+              "title": "Compiler Principle"
             }
           }
         ]
@@ -137,12 +141,13 @@
             "state": {
               "type": "outline",
               "state": {
+                "file": "4Fall/Compiler Principle.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline"
+              "title": "Outline of Compiler Principle"
             }
           }
         ],
@@ -163,7 +168,7 @@
       "bases:Create new base": false
     }
   },
-  "active": "51261f2d7e3837c4",
+  "active": "060aee3bcc929b4e",
   "lastOpenFiles": [
     "4Fall/宏观经济学.md",
     "Untitled.base",
