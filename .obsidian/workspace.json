@@ -4,17 +4,21 @@
     "type": "split",
     "children": [
       {
-        "id": "67550c5f11edfbe6",
+        "id": "db9d2a3e50a7191a",
         "type": "tabs",
         "children": [
           {
-            "id": "51261f2d7e3837c4",
+            "id": "2e7c2460f049e84c",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "4Fall/Compiler Principle.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "New tab"
+              "title": "Compiler Principle"
             }
           }
         ]
@@ -137,12 +141,13 @@
             "state": {
               "type": "outline",
               "state": {
+                "file": "4Fall/Compiler Principle.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline"
+              "title": "Outline of Compiler Principle"
             }
           }
         ],
@@ -163,17 +168,17 @@
       "bases:Create new base": false
     }
   },
-  "active": "51261f2d7e3837c4",
+  "active": "84e347f64e41a3ae",
   "lastOpenFiles": [
-    "4Fall/宏观经济学.md",
-    "Untitled.base",
     "TELOS/Paperlist.md",
     "TELOS/Issues.md",
+    "4Fall/宏观经济学.md",
+    "4Fall/博弈论.md",
+    "Untitled.base",
     "Untitled",
     "Issues",
     "README.md",
     "Untitled 1.md",
-    "4Fall/Compiler Principle.md",
-    "4Fall/博弈论.md"
+    "4Fall/Compiler Principle.md"
   ]
 }

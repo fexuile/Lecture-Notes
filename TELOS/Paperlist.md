@@ -52,3 +52,5 @@ DeCl is a software sandboxing system, enforcing deterministic and metered in x86
 **Evaluation:**
 **Conclusion:**
 **Learned:**
+
+## Flashield: a Hybrid Key-value Cache that Controls Flash Write Amplification(NSDI 19)
