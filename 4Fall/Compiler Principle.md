@@ -54,23 +54,56 @@ Context-Free Grammar(CFG)
 直接推导: $\gamma\alpha\delta \Rightarrow \gamma\beta\delta$，倒过来叫做直接规约。
 对于一个直接推导序列$a_0\Rightarrow a_1\Rightarrow\dots\Rightarrow a_n$，叫做$a_0\Rightarrow^+ a_n$，根据和正则表达式类似的方法可以定义$\Rightarrow^*$
 
-### 语法分析树
+#### 语法分析树
 句型：$S\Rightarrow^* \alpha$就称$\alpha$是$S$的句型。
 句子：不包含非终结符的句型叫做句子。
 语言：$L(G)$，文法$G$所有句子的集合。
 
 可以通过推导序列 / 规约序列画出语法分析树。
 
-### 二义性
+#### 二义性
 1. 一个句子的结构可能不唯一
 2. 一个句子的对应的分析树可能不唯一
 如果一个文法中存在某个句子有两棵分析树, 那么该句子是二义性的。
 如果一个文法存在二义性句子，那么就称这个文法是二义性文法
 
-### 证明L(G)和L相同
+#### 证明L(G)和L相同
 证明文法生成的语言：
 1. 首先证明L(G)属于L（按照推导序列长度进行数学归纳）
 2. 然后证明L属于L(G) （按照符号串的长度来构造推导序列）
 
-### 上下文无关文法和正则表达式
+#### 上下文无关文法和正则表达式
 上下文无关文法比正则表达式的能力更强。
+存在无法用正则表达式表达的上下文无关文法：$\{a^nb^n|n>0\}$，可以通过状态机的状态数证明；但是所有的正则表达式都可以用上下文无关文法表示，等价于NFA的每一个状态都是文法中的一个非终结符。
+NFA接受一个句子实际上是文法推导出该句子的过程。
+#### 文法分类
+- 任意文法（0型）：$\gamma\alpha\delta \rightarrow \gamma\beta\delta$
+- 上下文有关文法（1型）：$\gamma A\delta\rightarrow \gamma\beta\delta$
+- 上下文无关文法（2型）：$A\rightarrow \beta$
+- 正则文法（3型）：
+	- （右线性）：$A\rightarrow aB, A\rightarrow a$
+	- （左线性）：$A\rightarrow Ba, A\rightarrow a$
+
+### 文法设计
+#### 消除二义性
+举例：为了保证“else和最近未匹配的then匹配”，在文法中引入"matched_stmt"
+
+#### 消除左递归
+**直接左递归**：
+$$
+\begin{aligned}
+A\rightarrow Aa|b
+\end{aligned}
+$$
+可以变成
+$$
+\begin{aligned}
+A\rightarrow bA' \\
+A'\rightarrow aA' | \varepsilon \\
+\end{aligned}
+$$
+
+**间接左递归：** 考虑将生成式带入，然后变成直接左递归再消除。
+
+消除所有左递归的算法：将非终结符按照一定顺序排列，然后对于第$i$个终结符，每个形如$A_i \rightarrow A_jr(j<i)$的规则展开替换，然后消除其中的左递归。
+> 不同的顺序可能导致不同的结果，但是他们本质是相同的。
