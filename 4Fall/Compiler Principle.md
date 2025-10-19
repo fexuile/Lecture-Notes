@@ -196,3 +196,13 @@ $A\rightarrow\alpha\cdot\beta, \gamma$是他的一个项，表示已经读完$\a
 对于LR(0)而言，通常省略$\gamma$，可以将项分为：移进/待归约/归约/接受
 
 ##### Closure
+如何求解Closure(I)：
+1. 将I中的所有项加入到Closure中
+2. 迭代直到不再变化：若$A\rightarrow \alpha\cdot B\beta \in I$，且$B\rightarrow \gamma\in P$，那么将$B\rightarrow \cdot\gamma$加入。
+
+内核项:$S'\rightarrow \cdot S$和所有分割点不在最左侧的项。
+
+##### Goto
+$Goto(I, X)$：项集$\{A\rightarrow \alpha X\cdot\beta|A\rightarrow \alpha\cdot X\beta \in I\}$的闭包。
+
+有了Closure和Goto函数就可以构造出来一个LR(0)的自动机，然后就可以进行LR(0)的移入归约。
