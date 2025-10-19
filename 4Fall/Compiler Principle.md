@@ -107,3 +107,92 @@ $$
 
 消除所有左递归的算法：将非终结符按照一定顺序排列，然后对于第$i$个终结符，每个形如$A_i \rightarrow A_jr(j<i)$的规则展开替换，然后消除其中的左递归。
 > 不同的顺序可能导致不同的结果，但是他们本质是相同的。
+
+**提取左公因子：**
+$$
+A\rightarrow \alpha\beta_1 | \alpha\beta_2
+$$
+变成
+$$
+\begin{aligned}
+A\rightarrow &\alpha B \\
+B\rightarrow &\beta_1 | \beta_2
+\end{aligned}
+$$
+
+### 自顶向下的语法分析
+自顶向下分析是从文法的开始符号出发，试构造出一个最左推导，从左至右匹配输入的单词串。
+考虑当前到达非终结符$A$，且句子匹配到的字符为$a$，$A\rightarrow \alpha_1 |\dots| \alpha_k$，只有一个推导的首字符是$a$，所以可以直接构造最左推导。否则需要带回溯的进行尝试。
+
+特点：
+1. 带预测
+2. 试探过程（需要回溯）
+3. 可以通过编程实现，但是带回溯因为时间效率低应用少。
+
+#### 如何保证没有回溯
+考虑寻找First和Follow集合：
+##### First
+$First(X)$表示产生式$X$推导出来的语句的第一个字符。
+1. 考虑对于单个符号如何计算：
+	- 终结符X,First(X)=X
+	- 非终结符，存在推导式$X\rightarrow Y_1Y_2\dots Y_k$，需要考虑添加$First(Y_i)$和$\varepsilon$。
+	- 非终结符，存在$X\rightarrow \varepsilon$。把$\varepsilon$放入First中。
+2. 对于产生式右端$X_1X_2\dots X_n$，考虑依次枚举保证前面均为$\varepsilon$就可以添加当前的First。
+
+##### Follow
+$Follow(X)$表示紧跟在X后面的终结符。
+1. 将\$符号添加到Follow(S)中
+2. 迭代直到所有Follow集合都不变：
+	- 考虑$A\rightarrow \alpha B\beta$，$First(\beta)$的所有非$\varepsilon$符号都属于Follow(B)
+	- 考虑$A\rightarrow \alpha B$或$A\rightarrow \alpha B\beta$且$First(\beta)$中有$\varepsilon$，那么$Follow(A)$中所有符号均属于$Follow(B)$
+
+#### LL(1)文法
+> LL(k)表示从左到右扫描（L），最左推导（L），往前看k个字符
+
+对于文法中任意产生式：$A\rightarrow \alpha|\beta$，有：
+- $First(\alpha)\cap First(\beta)=\emptyset$
+- 若$\varepsilon\in First(\beta)$，有：$Follow(A)\cap First(\alpha)=\emptyset$，反之亦然
+
+##### 预测分析表：
+对于任何产生式$A\rightarrow \alpha$:
+- 对于First($\alpha$)中的每个终结符号a，将$A\rightarrow \alpha$加入到 M[A,a] 中。
+- 如果$\varepsilon$在First(A)中，那么对于Follow(A)中的每个符号b，将将$A\rightarrow\alpha$加入到 M[A,b] 中。
+
+然后就可以根据预测分析表来进行语法分析了。
+
+##### 非LL(1)文法
+二义性 / 左递归都不是，也有不存在LL(k)文法的语言。
+*左递归文法不适合自顶向下分析！*
+
+#### 错误恢复
+目的是在一次分析中找到更多的语法错误，所以需要对错误进行恢复以进行之后的分析。
+##### 恐慌模式
+忽略输入中的一些符号，直到出现由设计者选定的某个同步词法单元
+一般来说同步集合可以选择First(A)和Follow(A)中的所有符号。
+遇到error忽略输入，遇到synch弹出非终结符。
+##### 短语层次的恢复
+在error处插入错误处理函数，需要确保不会无限循环。 
+
+### 自底向上的语法分析
+为一个输入串构造语法分析树的过程。本质上是“移进-归约”分析。
+- LR：最大的可以构造出移进-归约语法分析器的语法类
+
+实际上就是从一个句子到起始符号S的过程。
+
+句柄：实际上就是最右推导中一个推导过程的右部分。
+整个分析的过程就是不断地将输入的内容移进栈中，然后归约，就能够构造出一颗语法分析树。
+
+#### 移进-归约分析中的冲突
+分为
+- 归约 / 归约冲突：不知道应该使用什么归约
+- 移入 / 归约冲突：不知道什么时候应该开始归约而不是继续移入字符。
+
+#### LR分析
+称为LR(k)分析，是一种常用的自底向上分析。
+L指从左向右扫描输入符号串，R指的构造最右推导，k表示往前看的字符
+
+##### LR(k) item
+$A\rightarrow\alpha\cdot\beta, \gamma$是他的一个项，表示已经读完$\alpha$了，还没读$\beta$，$\gamma$用来判断句柄。
+对于LR(0)而言，通常省略$\gamma$，可以将项分为：移进/待归约/归约/接受
+
+##### Closure
