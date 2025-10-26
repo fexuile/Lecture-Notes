@@ -187,8 +187,8 @@ $Follow(X)$表示紧跟在X后面的终结符。
 - 归约 / 归约冲突：不知道应该使用什么归约
 - 移入 / 归约冲突：不知道什么时候应该开始归约而不是继续移入字符。
 
-#### LR分析
-称为LR(k)分析，是一种常用的自底向上分析。
+#### LR(0)分析
+LR(k)分析，是一种常用的自底向上分析。
 L指从左向右扫描输入符号串，R指的构造最右推导，k表示往前看的字符
 
 ##### LR(k) item
@@ -199,10 +199,41 @@ $A\rightarrow\alpha\cdot\beta, \gamma$是他的一个项，表示已经读完$\a
 如何求解Closure(I)：
 1. 将I中的所有项加入到Closure中
 2. 迭代直到不再变化：若$A\rightarrow \alpha\cdot B\beta \in I$，且$B\rightarrow \gamma\in P$，那么将$B\rightarrow \cdot\gamma$加入。
+Closure的意义在于
 
 内核项:$S'\rightarrow \cdot S$和所有分割点不在最左侧的项。
-
 ##### Goto
 $Goto(I, X)$：项集$\{A\rightarrow \alpha X\cdot\beta|A\rightarrow \alpha\cdot X\beta \in I\}$的闭包。
+实际上对应着移入了X后能够到哪些项集。
 
 有了Closure和Goto函数就可以构造出来一个LR(0)的自动机，然后就可以进行LR(0)的移入归约。
+
+LR(0)自动机需要注意的是在归约的时候退回的数目应该是推导式右端的符号数，也就是说$T\rightarrow T*F\cdot$就需要弹栈3次。
+##### LR分析表(SLR分析表)
+由action[s,a]和goto[s,s']构成。
+action[s,a]可以表示归约$r_j$，也可以表示移进然后转移$s_j$.
+goto对应的就是读入的如果是一个非终结符应该怎么移动。
+
+判断移进/归约和归约/归约冲突：
+考虑当前项集内有：$X\rightarrow \alpha\cdot b\beta, A\rightarrow \alpha\cdot, B\rightarrow \beta\cdot$，考虑下一个字符是a，则：
+1. a=b,移入
+2. $a\in Follow(A)$，归约A
+3. $b\in Follow(B)$，归约B
+
+活前缀（可行前缀）：某个右句型的前缀，且没有越过该句型的句柄的右端。
+有效项：如果存在$S\rightarrow \alpha A\omega\rightarrow \alpha\beta_1\beta_2\omega$，那么就称项$A\rightarrow \beta_1\cdot\beta_2$对$\alpha\beta_1$有效。
+
+问题在于如果follow(A)中的集合可能移进可能归约，那么就依旧无法处理冲突。
+
+#### LR(1)分析
+在产生式后面增加1个向前搜索符号，考虑对于一个归约串$A\rightarrow \alpha\cdot, a_1a_2\dots a_k$，只有输入字符和向前搜索符号匹配才能够归约。
+LR(1)有效项：存在推导$S\rightarrow \delta A\omega\rightarrow \delta\alpha\beta\omega$，则称$[A\rightarrow \alpha\cdot\beta, a]$对活前缀$\delta\alpha$有效，其中$\omega$为$\varepsilon$且a为\$，或$a\in First(\omega)$。
+
+构造方法：
+**Closure：**
+设I是G的一个LR(1)项集，closure(I)是从I出发用下面三个规则构造的项集：
+1. 每一个I中的项都属于closure(I)。 
+2. 若项 $[A\rightarrow \alpha\cdot B\beta, a]$ 属于closure(I) 且 $B\rightarrow \gamma\in P$, 则对任何$b\in First(\beta a)$, 把 $[B→\cdot\gamma, b]$ 加到 closure(I)中。 
+3. 重复执行(2)直到closure(I)不再增大为止。
+**GOTO：** 与LR(0)相同
+
