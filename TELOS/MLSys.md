@@ -1,0 +1,6 @@
+- Multitenancy
+- Right-sizing
+- Dynamic Voltage Frequency Scaling: Power consuming.
+- SLAs: Service Level Agreements.
+- Head of Line Blocking: 头部阻塞
+- Transparent
